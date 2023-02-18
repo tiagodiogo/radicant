@@ -128,6 +128,8 @@ public class PhoneBookDatabase implements IDatabase {
                 if (!Long.valueOf(parts[0]).equals(id)) {
                     writer.write(parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3]);
                     writer.newLine();
+                } else {
+                    deleted = true;
                 }
             }
         } catch (IOException ex) {

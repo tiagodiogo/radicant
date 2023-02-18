@@ -13,6 +13,13 @@ public class PhoneBookRecord implements Serializable {
         // empty constructor for serialization
     }
 
+    public PhoneBookRecord(Long id, String name, String email, Integer mobile) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+    }
+
     public PhoneBookRecord(String[] csv) {
         this.id = Long.valueOf(csv[0]);
         this.name = csv[1];
