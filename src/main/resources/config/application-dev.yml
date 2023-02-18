@@ -18,12 +18,12 @@ logging:
     ROOT: DEBUG
     tech.jhipster: DEBUG
     org.hibernate.SQL: DEBUG
-    com.tiagodiogo.com: DEBUG
+    com.tiagodiogo.radicant: DEBUG
 
 spring:
   devtools:
     restart:
-      enabled: true
+      enabled: false
       additional-exclude: static/**
     livereload:
       enabled: false # we use Webpack dev server + BrowserSync for livereload
