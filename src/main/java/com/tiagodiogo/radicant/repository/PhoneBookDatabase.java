@@ -6,6 +6,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class PhoneBookDatabase implements IDatabase {
 
-    private static final String FILE_NAME = "phone-book.csv";
+    private static final String FILE_NAME = "/tmp/phone-book.csv";
     private static final String CSV_SEPARATOR = ",";
     private static final Long SELECT_ALL = -1L;
 
@@ -32,8 +33,7 @@ public class PhoneBookDatabase implements IDatabase {
     private final Lock writeLock;
 
     public PhoneBookDatabase() throws IOException {
-        String filePathString = getClass().getClassLoader().getResource(FILE_NAME).getFile();
-        filePath = Paths.get(filePathString);
+        filePath = Paths.get(FILE_NAME);
 
         ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         readLock = lock.readLock();
@@ -49,7 +49,7 @@ public class PhoneBookDatabase implements IDatabase {
         List<String> rows = new ArrayList<>();
 
         readLock.lock();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile(), Charset.defaultCharset()))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (id.equals(SELECT_ALL)) {
@@ -81,7 +81,7 @@ public class PhoneBookDatabase implements IDatabase {
 
         // Write to File
         writeLock.lock();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), Charset.defaultCharset(), true))) {
             writer.write(row);
             writer.newLine();
         } catch (IOException ex) {
@@ -97,7 +97,7 @@ public class PhoneBookDatabase implements IDatabase {
         List<String> entities = select(SELECT_ALL);
         boolean updated = false;
         writeLock.lock();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile()))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), Charset.defaultCharset()))) {
             for (String row : entities) {
                 String[] parts = row.split(CSV_SEPARATOR);
                 if (Long.valueOf(parts[0]).equals(id)) {
@@ -122,7 +122,7 @@ public class PhoneBookDatabase implements IDatabase {
         List<String> entities = select(SELECT_ALL);
         boolean deleted = false;
         writeLock.lock();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile()))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), Charset.defaultCharset()))) {
             for (String row : entities) {
                 String[] parts = row.split(CSV_SEPARATOR);
                 if (!Long.valueOf(parts[0]).equals(id)) {

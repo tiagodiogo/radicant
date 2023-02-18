@@ -7,6 +7,7 @@ import com.tiagodiogo.radicant.repository.PhoneBookDatabase;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PhoneBookDatabaseTest {
 
-    private static final String FILE_NAME = "phone-book.csv";
+    private static final String FILE_NAME = "/tmp/phone-book.csv";
     private Path filePath;
 
     PhoneBookRecord alice = new PhoneBookRecord(123L, "Alice", "alice@gmail.com", 210063423);
@@ -37,8 +38,7 @@ class PhoneBookDatabaseTest {
 
     @BeforeAll
     void initialSetup() {
-        String filePathString = getClass().getClassLoader().getResource(FILE_NAME).getFile();
-        filePath = Paths.get(filePathString);
+        filePath = Paths.get(FILE_NAME);
     }
 
     @BeforeEach
@@ -48,7 +48,7 @@ class PhoneBookDatabaseTest {
         }
         Files.createFile(filePath);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), Charset.defaultCharset(), true))) {
             for (PhoneBookRecord record : records) {
                 writer.write(record.toCSV());
                 writer.newLine();
