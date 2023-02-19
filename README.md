@@ -34,7 +34,8 @@ You may compile the source code into an executable jar and run it by executing:
 - ./mvnw package -P prod,api-docs
 - java -jar radicant-0.0.1-SNAPSHOT.jar
   This will also run the included tests.
-  Tests need access to /tmp for file creation, modification and deletion.
+
+Tests need access to /tmp for file creation, modification and deletion.
 
 By navigating to http://localhost:8080/admin/docs you can access the Swagger API
 
