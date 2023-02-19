@@ -57,6 +57,7 @@ public class PhoneBookDatabase implements IDatabase {
                 } else {
                     String[] parts = line.split(CSV_SEPARATOR);
                     if (Long.valueOf(parts[0]).equals(id)) {
+                        log.debug("Found existing record for id: {}", id);
                         rows.add(line);
                         return rows;
                     }
@@ -84,6 +85,7 @@ public class PhoneBookDatabase implements IDatabase {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toFile(), Charset.defaultCharset(), true))) {
             writer.write(row);
             writer.newLine();
+            log.debug("Inserted new record: {}", row);
         } catch (IOException ex) {
             log.error(ex.getMessage(), ex);
         } finally {
@@ -104,6 +106,7 @@ public class PhoneBookDatabase implements IDatabase {
                     String[] newParts = newRow.split(CSV_SEPARATOR);
                     writer.write(id + "," + newParts[1] + "," + newParts[2] + "," + newParts[3]);
                     updated = true;
+                    log.debug("Updated existing record with id: {}", id);
                 } else {
                     writer.write(parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3]);
                 }
@@ -130,6 +133,7 @@ public class PhoneBookDatabase implements IDatabase {
                     writer.newLine();
                 } else {
                     deleted = true;
+                    log.debug("Deleted existing record with id: {}", id);
                 }
             }
         } catch (IOException ex) {
