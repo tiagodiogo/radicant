@@ -32,6 +32,10 @@ public class PhoneBookDatabase implements IDatabase {
     private final Lock readLock;
     private final Lock writeLock;
 
+    /**
+     * Initializes the read/write locks and ensures the target file exists.
+     * @throws IOException in the event of an error creating the file.
+     */
     public PhoneBookDatabase() throws IOException {
         filePath = Paths.get(FILE_NAME);
 
@@ -44,6 +48,11 @@ public class PhoneBookDatabase implements IDatabase {
         }
     }
 
+    /**
+     * Fetches rows from the CSV file based on the received identifier.
+     * @param id can be either the row identifier or -1L representing a request to fetch all rows.
+     * @return a List of comma separated values representing CSV file rows.
+     */
     @Override
     public List<String> select(Long id) {
         List<String> rows = new ArrayList<>();
@@ -72,6 +81,11 @@ public class PhoneBookDatabase implements IDatabase {
         return rows;
     }
 
+    /**
+     * Generates a unique identifier and persists a new row with it into the CSV file.
+     * @param row the comma separated values representing a new row.
+     * @return the generated row identifier.
+     */
     @Override
     public Long insert(String row) {
         // Handle unique id generation
@@ -94,6 +108,12 @@ public class PhoneBookDatabase implements IDatabase {
         return uniqueID;
     }
 
+    /**
+     * Updates the row that matches the received identifier if one is found on the CSV file.
+     * @param id the row identifier.
+     * @param newRow the comma separated values to be persisted.
+     * @return true if the record was updated, false otherwise.
+     */
     @Override
     public boolean update(Long id, String newRow) {
         List<String> entities = select(SELECT_ALL);
@@ -120,6 +140,11 @@ public class PhoneBookDatabase implements IDatabase {
         return updated;
     }
 
+    /**
+     * Deletes the row that matches the received identifier if one is found on the CSV file.
+     * @param id the row identifier.
+     * @return true if the record was deleted, false otherwise.
+     */
     @Override
     public boolean delete(Long id) {
         List<String> entities = select(SELECT_ALL);
